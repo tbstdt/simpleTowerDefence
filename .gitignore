@@ -34,3 +34,12 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Assets/Plugins/Zenject/OptionalExtras/SampleGame1 (Beginner)
+.idea
+Assets/Plugins/Zenject/OptionalExtras/SampleGame2 (Advanced)
+Assets/Plugins/Zenject/OptionalExtras/SampleGame1 (Beginner).meta
+Assets/Plugins/Zenject/OptionalExtras/SampleGame2 (Advanced).meta
+Assets/Plugins/Zenject/OptionalExtras/UnitTests.zip
+Assets/Plugins/Zenject/OptionalExtras/UnitTests.zip.meta
+Assets/Plugins/Zenject/OptionalExtras/IntegrationTests.zip
+Assets/Plugins/Zenject/OptionalExtras/IntegrationTests.zip.meta
