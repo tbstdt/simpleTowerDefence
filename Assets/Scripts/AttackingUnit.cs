@@ -8,6 +8,7 @@ namespace TowerDefence
         public int Hp;
         public int Damage;
         public float AttackRate;
+        public float MinAttackDistance;
 
         public GameObject prefab;
     }

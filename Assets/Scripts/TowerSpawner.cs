@@ -10,7 +10,8 @@ public class TowerSpawner : MonoBehaviour
 {
 
     [Inject] private Assets gameAssets;
-    [Inject] private IPlayerUnitsHolder towerHolder;
+    [Inject (Id = "TowerHolder")] private IUnitsHolder towerHolder;
+    [Inject] private TowerAI.Factory towerFactory;
     
 
     private GameObject place;
@@ -35,8 +36,11 @@ public class TowerSpawner : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    var tower = Instantiate(gameAssets.PlayerUnits[0].prefab, placePosition, Quaternion.identity);
-                    towerHolder.AddNewTarget(tower.transform);
+                    var towerdata = gameAssets.PlayerUnits[0];
+                    var tower = towerFactory.Create(towerdata.prefab);
+                    tower.transform.position = placePosition;
+                    tower.Init(towerdata);
+                    towerHolder.AddNewUnit(tower.gameObject);
                    // isTowerMustPlaced = false;
                 }
             }

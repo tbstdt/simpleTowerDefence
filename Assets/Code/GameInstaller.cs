@@ -14,8 +14,10 @@ public class GameInstaller : ScriptableObjectInstaller<GameInstaller>
         
         Container.Bind<IEnemyMover>().To<EnemyMover>().AsTransient();
         Container.Bind<IEnemySpawner>().To<EnemySpawner>().AsSingle();
-        Container.Bind<IPlayerUnitsHolder>().To<PlayerUnitsHolder>().AsSingle();
-       
+        Container.Bind<IUnitsHolder>().WithId("EnemyHolder").To<UnitsHolder>().AsCached();
+        Container.Bind<IUnitsHolder>().WithId("TowerHolder").To<UnitsHolder>().AsCached();
+        
         Container.BindFactory<Object, EnemyAI, EnemyAI.Factory>().FromFactory<EnemyFactory>();
+        Container.BindFactory<Object, TowerAI, TowerAI.Factory>().FromFactory<TowerFactory>();
     }
 }

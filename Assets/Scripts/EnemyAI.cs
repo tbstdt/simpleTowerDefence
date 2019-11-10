@@ -8,40 +8,66 @@ namespace TowerDefence
 {
     [RequireComponent(typeof(NavMeshAgent))]
    
-    public class EnemyAI : MonoBehaviour
+    public class EnemyAI : MonoBehaviour, IDamageable
     {
-        [Inject]
-        private IEnemyMover mover;
+        [Inject] private IEnemyMover mover;
+        [Inject(Id = "EnemyHolder")] private IUnitsHolder enemyHolder;
+        
+        private Attacker attacker;
+        private AttackingUnit enemyData;
+       
+
+        public Transform Transform { get; private set; }
+        [SerializeField]
+        private int hp;
 
         public class Factory : PlaceholderFactory<Object, EnemyAI>
         {
         }
 
-        private void Start()
+        public void Init(AttackingUnit data)
         {
-            print("EnemyAI start");
+            enemyData = data;
+            hp = data.Hp;
+            Transform = transform;
             var agent = GetComponent<NavMeshAgent>();
+            agent.Warp(transform.position);
             mover.Init(agent, transform);
+            attacker = new Attacker(transform);
+            
+            InvokeRepeating(nameof(TrayAttack), 1, enemyData.AttackRate);
         }
 
         private void Update()
         {
-            mover.GoToClosestTarget();
+            CheckDeath();
+        }
+        
+        public void AddDamage(int damage)
+        {
+            hp -= damage;
+        }
+        
+        public void CheckDeath()
+        {
+            if (hp <= 0)
+            {
+                enemyHolder.RemoveUnit(gameObject);
+                Destroy(gameObject);
+            }
+        }
+     
+        private void TrayAttack()
+        {
+           var success = attacker.Attack(enemyData.Damage, enemyData.MinAttackDistance);
+           mover.Stop(success);
+          
+           if (success) return;
+           // get new target
+           mover.GoToClosestTarget();
+           attacker.SetTarget(mover.GetClosestTower());
         }
     }
     
-    public class EnemyFactory : IFactory<Object, EnemyAI>
-    {
-        readonly DiContainer _container;
-
-        public EnemyFactory(DiContainer container)
-        {
-            _container = container;
-        }
-
-        public EnemyAI Create(Object prefab)
-        {
-            return _container.InstantiatePrefabForComponent<EnemyAI>(prefab);
-        }
-    }
+   
 }

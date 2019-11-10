@@ -15,4 +15,5 @@ MonoBehaviour:
   Hp: 30
   Damage: 2
   AttackRate: 0.5
+  MinAttackDistance: 3
   prefab: {fileID: 4686710874156939476, guid: 0421c0b4223ab7c40948ce1275d339dc, type: 3}

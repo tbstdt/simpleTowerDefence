@@ -5,27 +5,38 @@ using Zenject;
 
 public interface IEnemyMover
 {
-    void Init(NavMeshAgent agent, Transform enemyTransform);
+    void Init(NavMeshAgent agent, Transform myTransform);
     void GoToClosestTarget();
+    TowerAI GetClosestTower();
+    void Stop(bool isStop);
 }
 
 public class EnemyMover : IEnemyMover
 {
-    [Inject]
-    private IPlayerUnitsHolder playerUnitsHolder;
+    [Inject (Id = "TowerHolder")] private IUnitsHolder towerHolder;
 
     private NavMeshAgent agent;
-    private Transform enemyTransform;
+    private Transform myTransform;
 
-    public void Init(NavMeshAgent agent,  Transform enemyTransform)
+    private GameObject closestTower;
+
+    public void Init(NavMeshAgent agent,  Transform myTransform)
     {
         this.agent = agent;
-        this.enemyTransform = enemyTransform;
+        this.myTransform = myTransform;
     }
+
+    public TowerAI GetClosestTower()
+    {
+        return closestTower == null ? null : closestTower.GetComponent<TowerAI>();
+    } 
 
     public void GoToClosestTarget()
     {
-        var target = playerUnitsHolder.GetClosestTarget(enemyTransform.position);
-        if (target != enemyTransform.position) agent.SetDestination(target);
+        closestTower = towerHolder.GetClosestUnit(myTransform.position);
+        if (closestTower == null || agent == null || myTransform == null || agent.navMeshOwner == null) return;
+        agent.SetDestination(closestTower.transform.position);
     }
+
+    public void Stop(bool isStop) => agent.isStopped = isStop; 
 }

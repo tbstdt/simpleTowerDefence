@@ -20,9 +20,14 @@ namespace TowerDefence
 
         private IEnumerator Spawn()
         {
-            spawner.SpawnEnemy(gameAssets.EnemyUnits[0], EnemySpawnPosition.position);
-            yield return new WaitForSeconds(3);
-            spawner.SpawnEnemy(gameAssets.EnemyUnits[1], EnemySpawnPosition.position);
+            while (true)
+            {
+                spawner.SpawnEnemy(gameAssets.EnemyUnits[0], EnemySpawnPosition.position);
+                yield return new WaitForSeconds(3);
+                spawner.SpawnEnemy(gameAssets.EnemyUnits[1], EnemySpawnPosition.position);
+                yield return new WaitForSeconds(3);
+            }
+          
         }
     }
 }
