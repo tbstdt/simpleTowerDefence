@@ -6,6 +6,7 @@ namespace TowerDefence
     {
         private IDamageable target;
         private Transform myTransform;
+     
 
         public Attacker(Transform my)
         {
@@ -17,14 +18,20 @@ namespace TowerDefence
             this.target = target;
         }
 
-        public bool Attack(int damage, float minDistance)
+        public bool IsCanAttack(float minDistance)
         {
             if (target == null || target.Transform == null) return false;
+            if (target.CheckDeath()) return false;
+            
             var distance = Vector3.Distance(target.Transform.position, myTransform.position);
             if (distance > minDistance) return false;
-            target.AddDamage(damage);
+           
             return true;
         }
-      
+
+        public void Attack(int damage)
+        {
+            target.AddDamage(damage);
+        }
     }
 }

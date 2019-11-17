@@ -16,7 +16,7 @@ public class EnemySpawner : IEnemySpawner
 
     public void SpawnEnemy(AttackingUnit enemy, Vector3 position)
     {
-        var ai = enemyAIFactory.Create(enemy.prefab);
+        var ai = enemyAIFactory.Create(enemy.Prefab[0]);
         ai.transform.position = position;
         ai.Init(enemy);
         enemyHolder.AddNewUnit(ai.gameObject);

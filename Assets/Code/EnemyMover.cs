@@ -29,7 +29,8 @@ public class EnemyMover : IEnemyMover
     public TowerAI GetClosestTower()
     {
         return closestTower == null ? null : closestTower.GetComponent<TowerAI>();
-    } 
+    }
+    
 
     public void GoToClosestTarget()
     {
@@ -39,4 +40,5 @@ public class EnemyMover : IEnemyMover
     }
 
     public void Stop(bool isStop) => agent.isStopped = isStop; 
+   
 }

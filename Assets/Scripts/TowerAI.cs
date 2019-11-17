@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
 using Zenject;
 using Object = UnityEngine.Object;
 
@@ -9,19 +11,30 @@ namespace TowerDefence
     public class TowerAI : MonoBehaviour, IDamageable
     {
         private Attacker attacker;
-        private AttackingUnit towerData;
-      
+        private EnemyAI target;
 
         public Transform Transform { get; private set; }
-        [SerializeField]
-        private int hp;
+        [SerializeField] private int level;
+        [SerializeField] private int hp;
+        [SerializeField] private bool isMainTower;
+        [SerializeField] private AttackingUnit towerData;
+       
+        public Transform CenterPos;
         
-
         [Inject (Id = "TowerHolder")] private IUnitsHolder towerHolder;
         [Inject (Id = "EnemyHolder")] private IUnitsHolder enemyHolder;
         
         public class Factory : PlaceholderFactory<Object, TowerAI>
         {
+        }
+
+        private void Start()
+        {
+            if (isMainTower)
+            {
+                Init(towerData);
+                towerHolder.AddNewUnit(gameObject);
+            }
         }
 
         public void Init(AttackingUnit data)
@@ -35,8 +48,22 @@ namespace TowerDefence
         
         private void TrayAttack()
         {
-            var success = attacker.Attack(towerData.Damage, towerData.MinAttackDistance);
-            if (success) return;
+            var success = attacker.IsCanAttack(towerData.MinAttackDistance);
+            if (success)
+            {
+                if (towerData.Projectile.Length > 0 && towerData.Projectile?[level] != null)
+                {
+                    var projectile = Instantiate(towerData.Projectile[level], CenterPos.position, Quaternion.identity, transform);
+                    projectile.transform.DOMove(target.CenterPos.position,0.5f)
+                        .SetEase(Ease.Linear).OnComplete(() =>
+                    {
+                        attacker.Attack(towerData.Damage);
+                        Destroy(projectile);
+                    });
+                }
+                return;
+            }
+           
             FindTarget();
         }
 
@@ -52,21 +79,29 @@ namespace TowerDefence
         
         private void FindTarget()
         {
-            var target = enemyHolder.GetClosestUnit(Transform.position);
-            if (target == null) return;
-            attacker.SetTarget(target.GetComponent<EnemyAI>());
-            
+            var targetObject = enemyHolder.GetClosestUnit(Transform.position);
+            if (targetObject == null) return;
+            target = targetObject.GetComponent<EnemyAI>();
+            attacker.SetTarget(target);
         }
 
-        public void CheckDeath()
+        public bool CheckDeath()
         {
             if (hp <= 0)
             {
                 towerHolder.RemoveUnit(gameObject);
-                Destroy(gameObject);
+                StartCoroutine(Death());
+                return true;
             }
+            return false;
         }
-       
+
+        private IEnumerator Death()
+        {
+            //TODO: Animation
+            yield return null;
+            Destroy(gameObject);
+        }
     }
     
    

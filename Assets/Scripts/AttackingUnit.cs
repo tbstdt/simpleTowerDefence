@@ -9,7 +9,9 @@ namespace TowerDefence
         public int Damage;
         public float AttackRate;
         public float MinAttackDistance;
-
-        public GameObject prefab;
+        public bool IsTower;
+        public GameObject[] Prefab;
+        public bool isRangeAttack;
+        public GameObject[] Projectile;
     }
 }

@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Hp: 30
   Damage: 2
-  AttackRate: 0.5
-  MinAttackDistance: 3
-  prefab: {fileID: 4686710874156939476, guid: 0421c0b4223ab7c40948ce1275d339dc, type: 3}
+  AttackRate: 2.05
+  MinAttackDistance: 10
+  IsTower: 0
+  Prefab:
+  - {fileID: 4686710874156939476, guid: 0421c0b4223ab7c40948ce1275d339dc, type: 3}
+  isRangeAttack: 1
+  Projectile:
+  - {fileID: 5837410418137270522, guid: a56af66d6301bf94f9175c2277ba4d4c, type: 3}

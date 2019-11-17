@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace TowerDefence
@@ -5,7 +6,7 @@ namespace TowerDefence
     public interface IDamageable
     {
         void AddDamage(int damage);
-        void CheckDeath();
+        bool CheckDeath();
 
         Transform Transform {get;}
     }
